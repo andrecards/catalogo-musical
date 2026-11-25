@@ -53,6 +53,7 @@ def main():
                 "t": titulo, "a": artista,
                 "c": fotos.get(norm(principal)),  # capa = foto do cantor (CDN do Deezer)
                 "f": str(f.relative_to(raiz)),   # caminho no pendrive, vai para a lista gerada
+                "s": round(f.stat().st_size / 1048576, 1),  # MB, para somar e ver se cabe no pendrive
             })
         pastas = [{"nome": bonito(s) if s else bonito(gen.name), "orig": s, "faixas": fx} for s, fx in grupos.items()]
         repetidos = {p["nome"] for p in pastas if [q["nome"] for q in pastas].count(p["nome"]) > 1}
