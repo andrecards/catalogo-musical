@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Segurança: só carrega código desta página e da API do Deezer; capas e prévias só do CDN do Deezer -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://api.deezer.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://*.dzcdn.net; media-src https://*.dzcdn.net; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Atualização Novembro 2026</title>
+<meta name="description" content="Escolha as músicas da Atualização Novembro 2026, ouça uma prévia e gere a sua lista.">
+<style>
+  :root{
+    --bg:#0f0f10; --panel:#17171a; --panel2:#1f1f23; --line:#2a2a30;
+    --txt:#f2f2f3; --mut:#9a9aa3; --acc:#ff6a1a; --acc2:#ffb347; --ok:#2fd27a;
+    --r:12px;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);
+    font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+  .app{display:grid;grid-template-columns:260px 1fr;grid-template-rows:1fr auto;height:100dvh}
+  /* barra lateral */
+  aside{grid-row:1;background:#000;padding:22px 14px;overflow:auto;border-right:1px solid var(--line)}
+  .marca{padding:0 8px 18px}
+  .marca h1{margin:0 0 4px;font-size:22px;line-height:1.15}
+  .marca p{margin:0;color:var(--mut);font-size:13px}
+  nav button{display:flex;justify-content:space-between;width:100%;padding:9px 10px;border-radius:8px;
+    color:var(--mut);text-align:left;font-weight:600}
+  nav button:hover{background:var(--panel);color:var(--txt)}
+  nav button[aria-current="true"]{background:var(--panel2);color:var(--txt)}
+  nav button span:last-child{font-weight:400;font-size:12px}
+  nav .sel{color:var(--acc)}
+  /* conteúdo */
+  main{grid-row:1;overflow:auto;background:linear-gradient(180deg,#2a1608 0,var(--bg) 320px)}
+  .topo{position:sticky;top:0;z-index:5;padding:14px 28px;background:rgba(15,15,16,.85);backdrop-filter:blur(10px)}
+  .busca{width:100%;max-width:460px;padding:11px 16px;border-radius:999px;border:1px solid var(--line);
+    background:var(--panel);color:var(--txt);font:inherit}
+  .busca:focus{outline:2px solid var(--acc);border-color:transparent}
+  .cab{padding:18px 28px 8px}
+  .cab h2{font-size:clamp(28px,5vw,48px);margin:0}
+  .cab p{color:var(--mut);margin:6px 0 0}
+  .pasta{margin:18px 20px 26px}
+  .pasta-cab{display:flex;align-items:center;gap:12px;padding:0 8px 8px;border-bottom:1px solid var(--line)}
+  .pasta-cab h3{margin:0;font-size:19px;flex:1}
+  .pasta-cab .n{color:var(--mut);font-size:13px}
+  .btn-pasta{padding:7px 14px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:600}
+  .btn-pasta:hover{border-color:var(--txt)}
+  .btn-pasta.on{background:var(--acc);border-color:var(--acc);color:#111}
+  .faixa{display:grid;grid-template-columns:28px 44px 1fr 40px;gap:12px;align-items:center;
+    padding:6px 8px;border-radius:8px}
+  .faixa:hover{background:var(--panel)}
+  .faixa.marcada{background:rgba(255,106,26,.10)}
+  .faixa input{width:18px;height:18px;accent-color:var(--acc);cursor:pointer}
+  .capa{width:44px;height:44px;border-radius:6px;object-fit:cover;background:var(--panel2);
+    display:grid;place-items:center;color:var(--mut);font-weight:700;font-size:14px}
+  .info{min-width:0}
+  .info b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .info span{display:block;color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .play{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--mut)}
+  .play:hover,.play.tocando{color:#111;background:var(--acc)}
+  .play svg{width:16px;height:16px}
+  .vazio{padding:40px 28px;color:var(--mut)}
+  .mais{margin:6px 28px 30px;color:var(--mut)}
+  /* barra de baixo */
+  footer{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;
+    padding:12px 20px;background:#000;border-top:1px solid var(--line)}
+  .player{display:flex;align-items:center;gap:12px;min-width:0}
+  .player .capa{width:52px;height:52px}
+  .player .info{max-width:320px}
+  .barra{flex:1;max-width:360px;height:4px;border-radius:4px;background:var(--line);overflow:hidden}
+  .barra i{display:block;height:100%;width:0;background:var(--acc)}
+  .aviso{color:var(--mut);font-size:12px}
+  .acoes{display:flex;align-items:center;gap:10px}
+  .contador{color:var(--mut);font-size:14px;white-space:nowrap}
+  .contador b{color:var(--txt)}
+  .primario{padding:11px 22px;border-radius:999px;background:var(--acc);color:#111;font-weight:700}
+  .primario:disabled{opacity:.4;cursor:not-allowed}
+  .sec{padding:10px 14px;border-radius:999px;color:var(--mut)}
+  .sec:hover{color:var(--txt)}
+  /* janela gerar */
+  dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--txt);
+    width:min(440px,92vw);padding:24px}
+  dialog::backdrop{background:rgba(0,0,0,.6)}
+  dialog h3{margin:0 0 6px}
+  dialog p{color:var(--mut);margin:0 0 16px}
+  dialog label{display:block;font-size:13px;color:var(--mut);margin-bottom:6px}
+  dialog input[type=text]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--line);
+    background:var(--bg);color:var(--txt);font:inherit;margin-bottom:16px}
+  .formatos{display:flex;gap:10px;margin-bottom:18px}
+  .formatos label{flex:1;display:flex;gap:8px;align-items:center;padding:10px;border:1px solid var(--line);
+    border-radius:8px;color:var(--txt);cursor:pointer;margin:0}
+  .formatos input{accent-color:var(--acc)}
+  .dlg-acoes{display:flex;justify-content:flex-end;gap:8px}
+  @media (max-width:820px){
+    .app{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto}
+    aside{grid-row:1;padding:12px;border:0;overflow:hidden;min-width:0}
+    .marca{padding:0 4px 10px}
+    nav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+    nav button{width:auto;white-space:nowrap;gap:8px;background:var(--panel)}
+    main{grid-row:2}
+    .topo,.cab{padding-left:14px;padding-right:14px}
+    .pasta{margin:14px 8px 22px}
+    footer{grid-template-columns:1fr;gap:10px}
+    .barra,.aviso{display:none}
+    .acoes{justify-content:space-between}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="marca">
+      <h1 id="titulo">Atualização Novembro 2026</h1>
+      <p id="resumo"></p>
+    </div>
+    <nav id="menu" aria-label="Categorias"></nav>
+  </aside>
+
+  <main id="main">
+    <div class="topo">
+      <input class="busca" id="busca" type="search" placeholder="Buscar música ou artista…" aria-label="Buscar música ou artista">
+    </div>
+    <div class="cab"><h2 id="cab-titulo"></h2><p id="cab-sub"></p></div>
+    <div id="lista"></div>
+  </main>
+
+  <footer>
+    <div class="player" id="player">
+      <div class="capa" id="p-capa">♪</div>
+      <div class="info"><b id="p-titulo">Escolha uma música</b><span id="p-artista">Toque no ▶ para ouvir 30 segundos</span></div>
+      <div class="barra" aria-hidden="true"><i id="p-barra"></i></div>
+      <span class="aviso">Prévia de 30 s</span>
+    </div>
+    <div class="acoes">
+      <span class="contador"><b id="qtd">0</b> selecionadas</span>
+      <button class="sec" id="limpar">Limpar</button>
+      <button class="primario" id="gerar" disabled>Gerar lista</button>
+    </div>
+  </footer>
+</div>
+
+<dialog id="dlg">
+  <form method="dialog">
+    <h3>Gerar lista de músicas</h3>
+    <p id="dlg-sub"></p>
+    <label for="nome">Seu nome (opcional)</label>
+    <input type="text" id="nome" autocomplete="name" placeholder="Ex.: Maria">
+    <div class="formatos" role="radiogroup" aria-label="Formato do arquivo">
+      <label><input type="radio" name="fmt" value="md" checked> Markdown (.md)</label>
+      <label><input type="radio" name="fmt" value="txt"> Texto (.txt)</label>
+    </div>
+    <div class="dlg-acoes">
+      <button class="sec" value="cancel">Cancelar</button>
+      <button class="primario" id="baixar" value="ok">Baixar arquivo</button>
+    </div>
+  </form>
+</dialog>
+
+<audio id="audio" preload="none"></audio>
+<script src="catalogo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
